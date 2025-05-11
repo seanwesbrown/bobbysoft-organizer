@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Notification } from '@vaadin/react-components/Notification';
 
 export default function handleError(error: any) {

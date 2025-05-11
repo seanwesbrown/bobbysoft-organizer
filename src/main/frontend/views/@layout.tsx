@@ -1,42 +1,57 @@
-import { Outlet, useLocation, useNavigate } from 'react-router';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Outlet } from 'react-router';
 import {
   AppLayout,
   Avatar,
+  HorizontalLayout,
   Icon,
   MenuBar,
   MenuBarItemSelectedEvent,
   ProgressBar,
-  Scroller,
-  SideNav,
-  SideNavItem,
 } from '@vaadin/react-components';
 import { Suspense } from 'react';
-import { createMenuItems } from '@vaadin/hilla-file-router/runtime.js';
 
 function Header() {
-  // TODO Replace with real application logo and name
   return (
-    <div className="flex p-m gap-m items-center" slot="drawer">
+    <div className="bobby-header flex p-m gap-m items-center" slot="navbar">
       <Icon icon="vaadin:cubes" className="text-primary icon-l" />
-      <span className="font-semibold text-l">Bobbysoft Organizer</span>
+      <span className="font-semibold text-l">Bobbysoft</span>
     </div>
   );
 }
 
-function MainMenu() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  return (
-    <SideNav className="mx-m" onNavigate={({ path }) => path != null && navigate(path)} location={location}>
-      {createMenuItems().map(({ to, icon, title }) => (
-        <SideNavItem path={to} key={to}>
-          {icon && <Icon icon={icon} slot="prefix" />}
-          {title}
-        </SideNavItem>
-      ))}
-    </SideNav>
-  );
+function NavBar() {
+    return (
+        <HorizontalLayout
+            slot="navbar touch-optimized"
+            className="bobby-navbar w-full justify-evenly self-stretch"
+        >
+            <a
+                href="/dashboard"
+                aria-label="Dashboard"
+                className="flex items-center px-m text-secondary font-medium"
+            >
+                <Icon icon="vaadin:dashboard" aria-label="Dashboard"/>
+                <p>Dashboard</p>
+            </a>
+            <a
+                href="/create"
+                aria-label="Create"
+                className="flex items-center px-m text-secondary font-medium"
+            >
+                <Icon icon="vaadin:pencil" aria-label="Create"/>
+                <p>Create</p>
+            </a>
+            <a
+                href="/share"
+                aria-label="Share"
+                className="flex items-center px-m text-secondary font-medium"
+            >
+                <Icon icon="vaadin:share-square" aria-label="Share"/>
+                <p>Share</p>
+            </a>
+        </HorizontalLayout>
+    );
 }
 
 function UserMenu() {
@@ -62,17 +77,15 @@ function UserMenu() {
     }
   };
   return (
-    <MenuBar theme="tertiary-inline" items={items} onItemSelected={onItemSelected} className="m-m" slot="drawer" />
+    <MenuBar theme="tertiary-inline" items={items} onItemSelected={onItemSelected} className="m-m" slot="navbar" />
   );
 }
 
 export default function MainLayout() {
   return (
-    <AppLayout primarySection="drawer">
+    <AppLayout primarySection="navbar" className="bobby-app-layout">
       <Header />
-      <Scroller slot="drawer">
-        <MainMenu />
-      </Scroller>
+      <NavBar />
       <UserMenu />
       <Suspense fallback={<ProgressBar indeterminate={true} className="m-0" />}>
         <Outlet />
@@ -80,3 +93,4 @@ export default function MainLayout() {
     </AppLayout>
   );
 }
+

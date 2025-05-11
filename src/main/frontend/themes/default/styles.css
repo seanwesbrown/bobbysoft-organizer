@@ -1,0 +1,47 @@
+.bobby-navbar {
+    vaadin-icon {
+        margin-right: 8px;
+    }
+}
+
+
+
+vaadin-app-layout{
+    .bobby-navbar {
+        a {
+            align-content: center;
+            justify-content: center;
+        }
+    }
+
+    &[drawer-opened] {
+        .bobby-navbar {
+            margin-top: 6px;
+            justify-content: center;
+
+            vaadin-icon {
+                visibility: collapse;
+            }
+            p {
+                visibility: show;
+            }
+        }
+    }
+
+    &[overlay] {
+        .bobby-header {
+            width: 100%;
+        }
+        .bobby-navbar {
+            vaadin-icon {
+                visibility: show;
+            }
+            p {
+                visibility: collapse;
+            }
+        }
+    }
+}
+
+
+
