@@ -1,23 +1,16 @@
 # Bobbysoft Organizer README
 
-- [ ] TODO Replace or update this README with instructions relevant to your application
+Welcome to Bobbysoft Organizer, the (future) modular organizer that will allow users to create and share organizational modules.
 
-To start the application in development mode, import it into your IDE and run the `Application` class. 
-You can also start the application from the command line by running: 
+## Local Development
+
+To run this project locally, docker is required. Start up the development postgres database by running:
+```bash
+docker-compose up -d
+```
+
+Once the postgres docker instance is running, you can start the application from the command line by running: 
 
 ```bash
 ./mvnw
 ```
-
-To build the application in production mode, run:
-
-```bash
-./mvnw -Pproduction package
-```
-
-## Getting Started
-
-The [Getting Started](https://vaadin.com/docs/latest/getting-started) guide will quickly familiarize you with your new
-Bobbysoft Organizer implementation. You'll learn how to set up your development environment, understand the project 
-structure, and find resources to help you add muscles to your skeleton — transforming it into a fully-featured 
-application.
