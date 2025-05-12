@@ -11,6 +11,9 @@ import {
 } from '@vaadin/react-components';
 import { Suspense } from 'react';
 
+//TODO temp for log in simulation
+const USER_LOGGED_IN = false;
+
 function Header() {
   return (
     <div className="bobby-header flex p-m gap-m items-center" slot="navbar">
@@ -21,55 +24,27 @@ function Header() {
 }
 
 function NavBar() {
-    return (
-        <HorizontalLayout
-            slot="navbar touch-optimized"
-            className="bobby-navbar w-full justify-evenly self-stretch"
-        >
-            <a
-                href="/dashboard"
-                aria-label="Dashboard"
-                className="flex items-center px-m text-secondary font-medium"
-            >
-                <Icon icon="vaadin:dashboard" aria-label="Dashboard"/>
-                <p>Dashboard</p>
-            </a>
-            <a
-                href="/create"
-                aria-label="Create"
-                className="flex items-center px-m text-secondary font-medium"
-            >
-                <Icon icon="vaadin:pencil" aria-label="Create"/>
-                <p>Create</p>
-            </a>
-            <a
-                href="/share"
-                aria-label="Share"
-                className="flex items-center px-m text-secondary font-medium"
-            >
-                <Icon icon="vaadin:share-square" aria-label="Share"/>
-                <p>Share</p>
-            </a>
-        </HorizontalLayout>
-    );
+  return (
+    <HorizontalLayout slot="navbar touch-optimized" className="bobby-navbar w-full justify-evenly self-stretch">
+      <a href="/organizer" aria-label="My Organizer" className="flex items-center px-m text-secondary font-medium">
+        <Icon icon="vaadin:dashboard" aria-label="My Organizer" />
+        <p>My Organizer</p>
+      </a>
+      <a href="/create" aria-label="Create" className="flex items-center px-m text-secondary font-medium">
+        <Icon icon="vaadin:pencil" aria-label="Create" />
+        <p>Create</p>
+      </a>
+      <a href="/share" aria-label="Share" className="flex items-center px-m text-secondary font-medium">
+        <Icon icon="vaadin:share-square" aria-label="Share" />
+        <p>Share</p>
+      </a>
+    </HorizontalLayout>
+  );
 }
 
 function UserMenu() {
   // TODO Replace with real user information and actions
-  const items = [
-    {
-      component: (
-        <>
-          <Avatar theme="xsmall" name="John Smith" colorIndex={5} className="mr-s" /> John Smith
-        </>
-      ),
-      children: [
-        { text: 'View Profile', action: () => console.log('View Profile') },
-        { text: 'Manage Settings', action: () => console.log('Manage Settings') },
-        { text: 'Logout', action: () => console.log('Logout') },
-      ],
-    },
-  ];
+  const items = USER_LOGGED_IN ? userMenuItems() : loginMenuItems();
   const onItemSelected = (event: MenuBarItemSelectedEvent) => {
     const action = (event.detail.value as any).action;
     if (action) {
@@ -79,6 +54,39 @@ function UserMenu() {
   return (
     <MenuBar theme="tertiary-inline" items={items} onItemSelected={onItemSelected} className="m-m" slot="navbar" />
   );
+}
+
+function userMenuItems() {
+  return [
+    {
+      component: (
+        <>
+          <Avatar theme="small" name="John Smith" colorIndex={5} className="mr-s" />
+        </>
+      ),
+      children: [
+        { text: 'View Profile', action: () => console.log('View Profile') },
+        { text: 'Manage Settings', action: () => console.log('Manage Settings') },
+        { text: 'Logout', action: () => console.log('Logout') },
+      ],
+    },
+  ];
+}
+
+function loginMenuItems() {
+  return [
+    {
+      component: (
+        <>
+          <Avatar theme="small" className="mr-s" />
+        </>
+      ),
+      children: [
+        { text: 'Login', action: () => console.log('Login') },
+        { text: 'Sign Up', action: () => console.log('Signup') },
+      ],
+    },
+  ];
 }
 
 export default function MainLayout() {
@@ -93,4 +101,3 @@ export default function MainLayout() {
     </AppLayout>
   );
 }
-
