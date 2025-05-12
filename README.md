@@ -1,7 +1,7 @@
 # Bobbysoft Organizer README
 
-Welcome to Bobbysoft Organizer, the (future) modular organizer that will allow users
-to create and share organizational modules.
+Welcome to Bobbysoft Organizer, the (future) modular organizer that will allow users to create and
+share organizational modules.
 
 ## Local Development
 
