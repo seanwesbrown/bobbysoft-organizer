@@ -5,8 +5,8 @@ import { FormLayout, TextField, Button } from '@vaadin/react-components';
 import { PasswordField } from '@vaadin/react-components/PasswordField.js';
 
 import { UserRegistrationService } from 'Frontend/generated/endpoints';
-import UserRegistrationDto from 'Frontend/generated/com/example/application/usermanagement/dto/UserRegistrationDto';
-import UserRegistrationDtoModel from 'Frontend/generated/com/example/application/usermanagement/dto/UserRegistrationDtoModel';
+import UserRegistrationDto from 'Frontend/generated/com/bobbysoft/application/usermanagement/dto/UserRegistrationDto';
+import UserRegistrationDtoModel from 'Frontend/generated/com/bobbysoft/application/usermanagement/dto/UserRegistrationDtoModel';
 import handleError from 'Frontend/views/_ErrorHandler';
 
 export const config: ViewConfig = {
