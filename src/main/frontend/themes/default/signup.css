@@ -1,0 +1,16 @@
+.bobby-signup-view {
+  justify-content: center;
+  align-items: center;
+  margin-top: -5%;
+
+  .bobby-signup-form {
+    background: var(--lumo-contrast-5pct);
+    padding: var(--lumo-space-xl) var(--lumo-space-l);
+    max-width: 370px;
+
+    vaadin-button {
+      margin-top: var(--lumo-space-l);
+      width: 100%;
+    }
+  }
+}

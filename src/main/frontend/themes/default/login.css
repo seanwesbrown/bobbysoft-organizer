@@ -1,0 +1,9 @@
+.bobby-login-view {
+  justify-content: center;
+  align-items: center;
+  margin-top: -5%;
+
+  vaadin-login-form-wrapper {
+    background: var(--lumo-contrast-5pct);
+  }
+}

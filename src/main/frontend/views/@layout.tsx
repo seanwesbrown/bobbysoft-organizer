@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Outlet } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
 import {
   AppLayout,
   Avatar,
@@ -74,6 +74,8 @@ function userMenuItems() {
 }
 
 function loginMenuItems() {
+  const navigate = useNavigate();
+
   return [
     {
       component: (
@@ -82,8 +84,8 @@ function loginMenuItems() {
         </>
       ),
       children: [
-        { text: 'Login', action: () => console.log('Login') },
-        { text: 'Sign Up', action: () => console.log('Signup') },
+        { text: 'Login', action: () => navigate('/login') },
+        { text: 'Sign Up', action: () => navigate('/signup') },
       ],
     },
   ];
