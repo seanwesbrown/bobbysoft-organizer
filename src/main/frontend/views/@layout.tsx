@@ -10,9 +10,14 @@ import {
   ProgressBar,
 } from '@vaadin/react-components';
 import { Suspense } from 'react';
+import { useAuth } from 'Frontend/security/auth';
+import { UserInfoService } from 'Frontend/generated/endpoints';
+import UserInfoDto from 'Frontend/generated/com/bobbysoft/application/usermanagement/dto/UserInfoDto';
 
-//TODO temp for log in simulation
-const USER_LOGGED_IN = false;
+const currentUser = await UserInfoService.getUserInfo().catch(() => {
+  return {} as UserInfoDto;
+});
+const isUser = await UserInfoService.isUser().catch(() => false);
 
 function Header() {
   return (
@@ -43,8 +48,14 @@ function NavBar() {
 }
 
 function UserMenu() {
-  // TODO Replace with real user information and actions
-  const items = USER_LOGGED_IN ? userMenuItems() : loginMenuItems();
+  let items;
+
+  if (isUser) {
+    items = userMenuItems(currentUser);
+  } else {
+    items = loginMenuItems();
+  }
+
   const onItemSelected = (event: MenuBarItemSelectedEvent) => {
     const action = (event.detail.value as any).action;
     if (action) {
@@ -56,18 +67,20 @@ function UserMenu() {
   );
 }
 
-function userMenuItems() {
+function userMenuItems(user: UserInfoDto) {
+  const { logout } = useAuth();
+
   return [
     {
       component: (
         <>
-          <Avatar theme="small" name="John Smith" colorIndex={5} className="mr-s" />
+          <Avatar theme="small" name={user.name} colorIndex={5} className="mr-s" />
         </>
       ),
       children: [
         { text: 'View Profile', action: () => console.log('View Profile') },
         { text: 'Manage Settings', action: () => console.log('Manage Settings') },
-        { text: 'Logout', action: () => console.log('Logout') },
+        { text: 'Logout', action: () => logout() },
       ],
     },
   ];
