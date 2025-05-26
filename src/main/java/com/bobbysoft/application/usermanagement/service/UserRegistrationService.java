@@ -5,9 +5,18 @@ import com.bobbysoft.application.usermanagement.domain.UserEntity;
 import com.bobbysoft.application.usermanagement.domain.UserRepository;
 import com.bobbysoft.application.usermanagement.dto.UserRegistrationDto;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.spring.security.VaadinAwareSecurityContextHolderStrategy;
 import com.vaadin.hilla.BrowserCallable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,14 +32,34 @@ public class UserRegistrationService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private HttpServletResponse response;
+
+    private final SecurityContextRepository securityContextRepository =
+            new HttpSessionSecurityContextRepository();
 
     @Nonnull
     @AnonymousAllowed
     public UserRegistrationDto registerUser(UserRegistrationDto registration) {
+        userRepository.save(buildUser(registration));
+        authenticateNewUser(registration.username(), registration.password());
+
+        return registration;
+    }
+
+    private UserEntity buildUser(UserRegistrationDto registration) {
         UserEntity user = new UserEntity();
         user.setUsername(registration.username());
         user.setPassword(passwordEncoder.encode(registration.password()));
+        user.setEmail(registration.email());
         user.setEnabled(true);
 
         List<AuthorityEntity> authorities = new LinkedList<>();
@@ -38,8 +67,19 @@ public class UserRegistrationService {
 
         user.setAuthorities(authorities);
 
-        userRepository.save(user);
+        return user;
+    }
 
-        return registration;
+    private void authenticateNewUser(String username, String password) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
+        Authentication authentication = authenticationManager.authenticate(authToken);
+
+        VaadinAwareSecurityContextHolderStrategy strategy = new VaadinAwareSecurityContextHolderStrategy();
+
+        SecurityContext context = strategy.createEmptyContext();
+        context.setAuthentication(authentication);
+        strategy.setContext(context);
+
+        securityContextRepository.saveContext(context, request, response);
     }
 }

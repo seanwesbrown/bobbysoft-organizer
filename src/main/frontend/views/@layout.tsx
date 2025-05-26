@@ -11,13 +11,10 @@ import {
 } from '@vaadin/react-components';
 import { Suspense } from 'react';
 import { useAuth } from 'Frontend/security/auth';
-import { UserInfoService } from 'Frontend/generated/endpoints';
+import { getCurrentUser } from 'Frontend/utils/user_utils';
 import UserInfoDto from 'Frontend/generated/com/bobbysoft/application/usermanagement/dto/UserInfoDto';
 
-const currentUser = await UserInfoService.getUserInfo().catch(() => {
-  return {} as UserInfoDto;
-});
-const isUser = await UserInfoService.isUser().catch(() => false);
+const currentUser = await getCurrentUser();
 
 function Header() {
   return (
@@ -50,7 +47,7 @@ function NavBar() {
 function UserMenu() {
   let items;
 
-  if (isUser) {
+  if (currentUser != null) {
     items = userMenuItems(currentUser);
   } else {
     items = loginMenuItems();

@@ -14,7 +14,6 @@ public class AuthorityEntity implements GrantedAuthority {
 
     public AuthorityEntity(UserEntity user, String authority) {
         this.user = user;
-        this.username = user.getUsername();
         this.authority = authority;
     }
 
@@ -25,9 +24,6 @@ public class AuthorityEntity implements GrantedAuthority {
 
     @Column(name = "authority", nullable = false)
     private String authority;
-
-    @Column(name = "username", nullable = false)
-    private String username;
 
     @ManyToOne()
     private UserEntity user;
@@ -55,13 +51,5 @@ public class AuthorityEntity implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return authority;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 }

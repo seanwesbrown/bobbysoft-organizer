@@ -13,6 +13,8 @@ import java.util.UUID;
 @Table(name = "users")
 public class UserEntity implements UserDetails {
     public static final int USER_MAX_LENGTH = 50;
+    public static final int EMAIL_MAX_LENGTH = 100;
+    public static final int AVATAR_URL_MAX_LENGTH = 200;
     public static final int ENCODED_PASSWORD_MAX_LENGTH = 255;
 
     @Id
@@ -24,12 +26,20 @@ public class UserEntity implements UserDetails {
     @Size(max = USER_MAX_LENGTH)
     private String username;
 
+    @Column(name = "email")
+    @Size(max = EMAIL_MAX_LENGTH)
+    private String email;
+
     @Column(name = "password", nullable = false)
     @Size(max = ENCODED_PASSWORD_MAX_LENGTH)
     private String password;
 
     @Column(name = "enabled")
     private boolean enabled;
+
+    @Column(name = "avatar_url")
+    @Size(max = AVATAR_URL_MAX_LENGTH)
+    private String avatarUrl;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     private Collection<AuthorityEntity> authorities;
@@ -56,6 +66,22 @@ public class UserEntity implements UserDetails {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public UUID getId() {
