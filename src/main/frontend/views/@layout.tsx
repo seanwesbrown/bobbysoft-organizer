@@ -3,11 +3,14 @@ import { Outlet, useNavigate } from 'react-router';
 import {
   AppLayout,
   Avatar,
+  Button,
   HorizontalLayout,
   Icon,
   MenuBar,
   MenuBarItemSelectedEvent,
+  Popover,
   ProgressBar,
+  VerticalLayout,
 } from '@vaadin/react-components';
 import { Suspense } from 'react';
 import { useAuth } from 'Frontend/security/auth';
@@ -45,13 +48,7 @@ function NavBar() {
 }
 
 function UserMenu() {
-  let items;
-
-  if (currentUser != null) {
-    items = userMenuItems(currentUser);
-  } else {
-    items = loginMenuItems();
-  }
+  const items = userMenuItems(currentUser);
 
   const onItemSelected = (event: MenuBarItemSelectedEvent) => {
     const action = (event.detail.value as any).action;
@@ -59,45 +56,68 @@ function UserMenu() {
       action();
     }
   };
+
   return (
     <MenuBar theme="tertiary-inline" items={items} onItemSelected={onItemSelected} className="m-m" slot="navbar" />
   );
 }
 
-function userMenuItems(user: UserInfoDto) {
-  const { logout } = useAuth();
-
+function userMenuItems(user: UserInfoDto | null) {
   return [
     {
-      component: (
-        <>
-          <Avatar theme="small" name={user.name} colorIndex={5} className="mr-s" />
-        </>
-      ),
-      children: [
-        { text: 'View Profile', action: () => console.log('View Profile') },
-        { text: 'Manage Settings', action: () => console.log('Manage Settings') },
-        { text: 'Logout', action: () => logout() },
-      ],
+      component: userMenuPopover(user),
     },
   ];
 }
 
-function loginMenuItems() {
+function userMenuPopover(user: UserInfoDto | null) {
+  const popoverOptions = getPopoverOptions(user);
+  const userAvatar = getUserAvatar(user);
+
+  return (
+    <>
+      {userAvatar}
+      <Popover className="bobby-user-popover" for="user-menu" modal position="bottom">
+        <div className="bobby-user-popover">
+          {user != null && (
+            <>
+              <HorizontalLayout>
+                <p>Welcome {user.name}</p>
+              </HorizontalLayout>
+              <hr />
+            </>
+          )}
+
+          <VerticalLayout style={{ alignItems: 'center' }}>{popoverOptions}</VerticalLayout>
+        </div>
+      </Popover>
+    </>
+  );
+}
+
+function getUserAvatar(user: UserInfoDto | null) {
+  if (user != null) {
+    return <Avatar id="user-menu" theme="small" name={user.name} colorIndex={5} className="mr-s" />;
+  }
+
+  return <Avatar id="user-menu" theme="small" className="mr-s" />;
+}
+
+function getPopoverOptions(user: UserInfoDto | null) {
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
+  if (user == null) {
+    return [
+      <Button onClick={() => navigate('/login')}>Login</Button>,
+      <Button onClick={() => navigate('/signup')}>Sign Up</Button>,
+    ];
+  }
+
   return [
-    {
-      component: (
-        <>
-          <Avatar theme="small" className="mr-s" />
-        </>
-      ),
-      children: [
-        { text: 'Login', action: () => navigate('/login') },
-        { text: 'Sign Up', action: () => navigate('/signup') },
-      ],
-    },
+    <Button onClick={() => console.log('View Profile')}>View Profile</Button>,
+    <Button onClick={() => console.log('Manage Settings')}>Manage Settings</Button>,
+    <Button onClick={() => logout()}>Logout</Button>,
   ];
 }
 

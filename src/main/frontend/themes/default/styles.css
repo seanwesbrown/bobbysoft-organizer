@@ -1,6 +1,27 @@
 @import 'login.css';
 @import 'signup.css';
 
+.bobby-user-popover {
+  p {
+    margin: var(--lumo-space-xs) var(--lumo-space-s);
+  }
+
+  vaadin-vertical-layout {
+    justify-content: center;
+  }
+
+  vaadin-button {
+    color: var(--lumo-body-text-color);
+    background-color: var(--lumo-base-color);
+    width: 100%;
+    margin: 0;
+  }
+
+  vaadin-button:hover {
+    background-color: var(--lumo-contrast-10pct);
+  }
+}
+
 .bobby-navbar {
   vaadin-icon {
     margin-right: 8px;
