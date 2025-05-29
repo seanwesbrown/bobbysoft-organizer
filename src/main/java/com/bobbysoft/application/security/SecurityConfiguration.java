@@ -4,14 +4,16 @@ import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import com.vaadin.hilla.route.RouteUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import javax.sql.DataSource;
 
 @EnableWebSecurity
 @Configuration
@@ -33,7 +35,7 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 
         super.configure(http);
 
-        setLoginView(http, "/login", "/");
+        setLoginView(http, "/login");
     }
 
     @Override
@@ -43,8 +45,16 @@ public class SecurityConfiguration extends VaadinWebSecurity {
     }
 
     @Bean
-    public UserDetailsManager userDetailsService(DataSource datasource) {
-        return new JdbcUserDetailsManager(datasource);
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+
+        return new ProviderManager(provider);
+    }
 }

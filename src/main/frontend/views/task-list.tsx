@@ -52,7 +52,7 @@ function TaskEntryForm(props: TaskEntryFormProps) {
       <TextField
         placeholder="What do you want to do?"
         aria-label="Task description"
-        maxlength={255}
+        max-length={255}
         style={{ minWidth: '20em' }}
         value={description.value}
         onValueChanged={(evt) => (description.value = evt.detail.value)}

@@ -3,16 +3,21 @@ import { Outlet, useNavigate } from 'react-router';
 import {
   AppLayout,
   Avatar,
+  Button,
   HorizontalLayout,
   Icon,
   MenuBar,
   MenuBarItemSelectedEvent,
+  Popover,
   ProgressBar,
+  VerticalLayout,
 } from '@vaadin/react-components';
 import { Suspense } from 'react';
+import { useAuth } from 'Frontend/security/auth';
+import { getCurrentUser, isLoggedInUser } from 'Frontend/utils/user_utils';
+import UserInfoDto from 'Frontend/generated/com/bobbysoft/application/usermanagement/dto/UserInfoDto';
 
-//TODO temp for log in simulation
-const USER_LOGGED_IN = false;
+const currentUser = await getCurrentUser();
 
 function Header() {
   return (
@@ -43,51 +48,92 @@ function NavBar() {
 }
 
 function UserMenu() {
-  // TODO Replace with real user information and actions
-  const items = USER_LOGGED_IN ? userMenuItems() : loginMenuItems();
+  const items = userMenuItems(currentUser);
+
   const onItemSelected = (event: MenuBarItemSelectedEvent) => {
     const action = (event.detail.value as any).action;
     if (action) {
       action();
     }
   };
+
   return (
     <MenuBar theme="tertiary-inline" items={items} onItemSelected={onItemSelected} className="m-m" slot="navbar" />
   );
 }
 
-function userMenuItems() {
+function userMenuItems(user: UserInfoDto) {
   return [
     {
-      component: (
-        <>
-          <Avatar theme="small" name="John Smith" colorIndex={5} className="mr-s" />
-        </>
-      ),
-      children: [
-        { text: 'View Profile', action: () => console.log('View Profile') },
-        { text: 'Manage Settings', action: () => console.log('Manage Settings') },
-        { text: 'Logout', action: () => console.log('Logout') },
-      ],
+      component: userMenuPopover(user),
     },
   ];
 }
 
-function loginMenuItems() {
+function userMenuPopover(user: UserInfoDto) {
+  const popoverOptions = getPopoverOptions(user);
+  const userAvatar = getUserAvatar(user);
+
+  return (
+    <>
+      {userAvatar}
+      <Popover key="user-popover" className="bobby-user-popover" for="user-menu" modal position="bottom">
+        <div className="bobby-user-popover">
+          {isLoggedInUser(user) && (
+            <>
+              <HorizontalLayout>
+                <p>
+                  Welcome <b>{user.name}</b>!
+                </p>
+              </HorizontalLayout>
+              <hr />
+            </>
+          )}
+
+          <VerticalLayout style={{ alignItems: 'center' }}>{popoverOptions}</VerticalLayout>
+        </div>
+      </Popover>
+    </>
+  );
+}
+
+function getUserAvatar(user: UserInfoDto) {
+  if (isLoggedInUser(user)) {
+    return <Avatar key="avatar" id="user-menu" theme="small" name={user.name} colorIndex={5} className="mr-s" />;
+  }
+
+  return <Avatar key="avatar" id="user-menu" theme="small" className="mr-s" />;
+}
+
+function getPopoverOptions(user: UserInfoDto) {
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
+  if (!isLoggedInUser(user)) {
+    return [
+      <Button key="login" onClick={() => navigate('/login')}>
+        Login
+      </Button>,
+      <Button key="signup" onClick={() => navigate('/signup')}>
+        Sign Up
+      </Button>,
+    ];
+  }
+
   return [
-    {
-      component: (
-        <>
-          <Avatar theme="small" className="mr-s" />
-        </>
-      ),
-      children: [
-        { text: 'Login', action: () => navigate('/login') },
-        { text: 'Sign Up', action: () => navigate('/signup') },
-      ],
-    },
+    <Button key="profile" onClick={() => console.log('View Profile')}>
+      View Profile
+    </Button>,
+    <Button key="settings" onClick={() => console.log('Manage Settings')}>
+      Manage Settings
+    </Button>,
+    <Button
+      key="logout"
+      onClick={async () => {
+        await logout();
+      }}>
+      Logout
+    </Button>,
   ];
 }
 
