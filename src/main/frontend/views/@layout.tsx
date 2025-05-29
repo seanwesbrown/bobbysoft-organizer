@@ -14,7 +14,7 @@ import {
 } from '@vaadin/react-components';
 import { Suspense } from 'react';
 import { useAuth } from 'Frontend/security/auth';
-import { getCurrentUser } from 'Frontend/utils/user_utils';
+import { getCurrentUser, isLoggedInUser } from 'Frontend/utils/user_utils';
 import UserInfoDto from 'Frontend/generated/com/bobbysoft/application/usermanagement/dto/UserInfoDto';
 
 const currentUser = await getCurrentUser();
@@ -62,7 +62,7 @@ function UserMenu() {
   );
 }
 
-function userMenuItems(user: UserInfoDto | null) {
+function userMenuItems(user: UserInfoDto) {
   return [
     {
       component: userMenuPopover(user),
@@ -70,19 +70,21 @@ function userMenuItems(user: UserInfoDto | null) {
   ];
 }
 
-function userMenuPopover(user: UserInfoDto | null) {
+function userMenuPopover(user: UserInfoDto) {
   const popoverOptions = getPopoverOptions(user);
   const userAvatar = getUserAvatar(user);
 
   return (
     <>
       {userAvatar}
-      <Popover className="bobby-user-popover" for="user-menu" modal position="bottom">
+      <Popover key="user-popover" className="bobby-user-popover" for="user-menu" modal position="bottom">
         <div className="bobby-user-popover">
-          {user != null && (
+          {isLoggedInUser(user) && (
             <>
               <HorizontalLayout>
-                <p>Welcome {user.name}</p>
+                <p>
+                  Welcome <b>{user.name}</b>!
+                </p>
               </HorizontalLayout>
               <hr />
             </>
@@ -95,29 +97,43 @@ function userMenuPopover(user: UserInfoDto | null) {
   );
 }
 
-function getUserAvatar(user: UserInfoDto | null) {
-  if (user != null) {
-    return <Avatar id="user-menu" theme="small" name={user.name} colorIndex={5} className="mr-s" />;
+function getUserAvatar(user: UserInfoDto) {
+  if (isLoggedInUser(user)) {
+    return <Avatar key="avatar" id="user-menu" theme="small" name={user.name} colorIndex={5} className="mr-s" />;
   }
 
-  return <Avatar id="user-menu" theme="small" className="mr-s" />;
+  return <Avatar key="avatar" id="user-menu" theme="small" className="mr-s" />;
 }
 
-function getPopoverOptions(user: UserInfoDto | null) {
+function getPopoverOptions(user: UserInfoDto) {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  if (user == null) {
+  if (!isLoggedInUser(user)) {
     return [
-      <Button onClick={() => navigate('/login')}>Login</Button>,
-      <Button onClick={() => navigate('/signup')}>Sign Up</Button>,
+      <Button key="login" onClick={() => navigate('/login')}>
+        Login
+      </Button>,
+      <Button key="signup" onClick={() => navigate('/signup')}>
+        Sign Up
+      </Button>,
     ];
   }
 
   return [
-    <Button onClick={() => console.log('View Profile')}>View Profile</Button>,
-    <Button onClick={() => console.log('Manage Settings')}>Manage Settings</Button>,
-    <Button onClick={() => logout()}>Logout</Button>,
+    <Button key="profile" onClick={() => console.log('View Profile')}>
+      View Profile
+    </Button>,
+    <Button key="settings" onClick={() => console.log('Manage Settings')}>
+      Manage Settings
+    </Button>,
+    <Button
+      key="logout"
+      onClick={async () => {
+        await logout();
+      }}>
+      Logout
+    </Button>,
   ];
 }
 

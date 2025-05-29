@@ -7,7 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @ValidPasswordConfirmation
-public record UserRegistrationDto(String username, String email, String password, String passwordConfirmation) {
+public record UserRegistrationDto(
+        String username,
+        String email,
+        String password,
+        String passwordConfirmation,
+        String registrationError) {
     @NotNull(message = "Please enter a user name")
     @NotBlank(message = "Username cannot be blank")
     @Size(min = 5, message = "Please enter a username at least 5 characters long")
@@ -33,5 +38,14 @@ public record UserRegistrationDto(String username, String email, String password
     @NotBlank(message = "Please confirm your password")
     public String passwordConfirmation() {
         return passwordConfirmation;
+    }
+
+    public UserRegistrationDto withError(String error) {
+        return new UserRegistrationDto(
+                username,
+                email,
+                password,
+                passwordConfirmation,
+                error);
     }
 }

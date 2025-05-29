@@ -49,10 +49,18 @@ public class UserRegistrationService {
     @Nonnull
     @AnonymousAllowed
     public UserRegistrationDto registerUser(UserRegistrationDto registration) {
+        if (userRepository.findByUsername(registration.username()).isPresent()) {
+            return registration.withError("The requested user name is already in use");
+        }
+
+        if (userRepository.findByEmail(registration.email()).isPresent()) {
+            return registration.withError("The requested email is already in use");
+        }
+
         userRepository.save(buildUser(registration));
         authenticateNewUser(registration.username(), registration.password());
 
-        return registration;
+        return registration.withError("");
     }
 
     private UserEntity buildUser(UserRegistrationDto registration) {

@@ -3,7 +3,7 @@ import { LoginForm } from '@vaadin/react-components';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useEffect } from 'react';
 
-import { getCurrentUser } from 'Frontend/utils/user_utils';
+import { getCurrentUser, isLoggedInUser } from 'Frontend/utils/user_utils';
 
 export const config: ViewConfig = {
   title: 'Login',
@@ -17,7 +17,7 @@ export default function LoginView() {
   const hasError = searchParams.has('error');
 
   useEffect(() => {
-    if (currentUser != null) {
+    if (isLoggedInUser(currentUser)) {
       navigate('/');
     }
   }, []);
