@@ -1,13 +1,13 @@
 services:
-    postgres:
-        image: postgres:latest
-        ports:
-          - "5432:5432"
-        volumes:
-          - pgdata:/var/lib/postgresql/data
-        environment:
-          - POSTGRES_DB=bobbysoft_organizer
-          - POSTGRES_PASSWORD=admin
-          - POSTGRES_USER=admin
+  postgres:
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=bobbysoft_organizer
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
 volumes:
   pgdata:

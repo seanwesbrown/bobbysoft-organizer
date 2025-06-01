@@ -31,24 +31,30 @@ function Header() {
 function NavBar() {
   return (
     <HorizontalLayout slot="navbar touch-optimized" className="bobby-navbar w-full justify-evenly self-stretch">
-      <a href="/organizer" aria-label="My Organizer" className="flex items-center px-m text-secondary font-medium">
-        <Icon icon="vaadin:dashboard" aria-label="My Organizer" />
-        <p>My Organizer</p>
-      </a>
-      <a href="/create" aria-label="Create" className="flex items-center px-m text-secondary font-medium">
-        <Icon icon="vaadin:pencil" aria-label="Create" />
-        <p>Create</p>
-      </a>
-      <a href="/share" aria-label="Share" className="flex items-center px-m text-secondary font-medium">
-        <Icon icon="vaadin:share-square" aria-label="Share" />
-        <p>Share</p>
-      </a>
+      {isLoggedInUser(currentUser) && NavbarLinks()}
     </HorizontalLayout>
   );
 }
 
+function NavbarLinks() {
+  return [
+    <a href="/organizer" aria-label="My Organizer" className="flex items-center px-m text-secondary font-medium">
+      <Icon icon="vaadin:dashboard" aria-label="My Organizer" />
+      <p>My Organizer</p>
+    </a>,
+    <a href="/create" aria-label="Create" className="flex items-center px-m text-secondary font-medium">
+      <Icon icon="vaadin:pencil" aria-label="Create" />
+      <p>Create</p>
+    </a>,
+    <a href="/share" aria-label="Share" className="flex items-center px-m text-secondary font-medium">
+      <Icon icon="vaadin:share-square" aria-label="Share" />
+      <p>Share</p>
+    </a>,
+  ];
+}
+
 function UserMenu() {
-  const items = userMenuItems(currentUser);
+  const items = UserMenuItems(currentUser);
 
   const onItemSelected = (event: MenuBarItemSelectedEvent) => {
     const action = (event.detail.value as any).action;
@@ -62,17 +68,17 @@ function UserMenu() {
   );
 }
 
-function userMenuItems(user: UserInfoDto) {
+function UserMenuItems(user: UserInfoDto) {
   return [
     {
-      component: userMenuPopover(user),
+      component: UserMenuPopover(user),
     },
   ];
 }
 
-function userMenuPopover(user: UserInfoDto) {
-  const popoverOptions = getPopoverOptions(user);
-  const userAvatar = getUserAvatar(user);
+function UserMenuPopover(user: UserInfoDto) {
+  const popoverOptions = PopoverOptions(user);
+  const userAvatar = UserAvatar(user);
 
   return (
     <>
@@ -97,7 +103,7 @@ function userMenuPopover(user: UserInfoDto) {
   );
 }
 
-function getUserAvatar(user: UserInfoDto) {
+function UserAvatar(user: UserInfoDto) {
   if (isLoggedInUser(user)) {
     return <Avatar key="avatar" id="user-menu" theme="small" name={user.name} colorIndex={5} className="mr-s" />;
   }
@@ -105,7 +111,7 @@ function getUserAvatar(user: UserInfoDto) {
   return <Avatar key="avatar" id="user-menu" theme="small" className="mr-s" />;
 }
 
-function getPopoverOptions(user: UserInfoDto) {
+function PopoverOptions(user: UserInfoDto) {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
