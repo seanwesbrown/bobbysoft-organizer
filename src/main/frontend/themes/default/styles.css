@@ -1,6 +1,85 @@
 @import 'login.css';
 @import 'signup.css';
 
+.bobby-main-layout {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 0px;
+  padding: 0px;
+
+  align-content: flex-top;
+
+  .bobby-main-left {
+    flex-grow: 4;
+    height: 0px;
+
+    .bobby-title {
+      margin: 125px auto 0px;
+      padding-bottom: 0px;
+      align-items: center;
+      width: fit-content;
+      max-width: 512px;
+
+      @media (orientation: portrait) {
+        margin: auto;
+      }
+    }
+
+    vaadin-button {
+      width: 200px;
+    }
+
+    h1 {
+      width: 100%;
+      font-size: 56px;
+      font-family: 'Anton', sans-serif;
+      font-weight: 400;
+      font-style: normal;
+
+      @media (max-width: 512px) {
+        font-size: 36px;
+      }
+    }
+
+    p {
+      width: 100%;
+    }
+  }
+
+  .bobby-main-right {
+    flex-grow: 1;
+
+    background-image: url('/images/bobby.png');
+    background-repeat: no-repeat;
+    background-size: 90%;
+    background-position: center top;
+    margin-top: var(--lumo-space-l);
+    margin-right: var(--lumo-space-l);
+
+    align-items: center;
+    width: 50%;
+
+    @media (orientation: portrait) {
+      margin-top: -30%;
+    }
+
+    h2 {
+    }
+  }
+
+  .bobby-background {
+    position: absolute;
+    left: 25%;
+    height: calc(100% - 150px);
+    width: 75%;
+    z-index: -1;
+
+    background-color: aqua;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 85% 51%, 48% 99%, 69% 35%, 0% 70%, 59% 13%);
+  }
+}
+
 .bobby-error-notification {
   color: var(--lumo-error-text-color);
   background: var(--lumo-error-color-10pct);
