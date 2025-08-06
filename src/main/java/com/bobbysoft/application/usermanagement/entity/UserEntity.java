@@ -96,6 +96,14 @@ public class UserEntity implements UserDetails {
         this.id = id;
     }
 
+    public Collection<ModuleEntity> getModules() {
+        return modules;
+    }
+
+    public void setModules(Collection<ModuleEntity> modules) {
+        this.modules = modules;
+    }
+
     public void setAuthorities(Collection<AuthorityEntity> authorities) {
         this.authorities = authorities;
     }
@@ -119,5 +127,4 @@ public class UserEntity implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return UserDetails.super.isCredentialsNonExpired();
     }
-
 }
