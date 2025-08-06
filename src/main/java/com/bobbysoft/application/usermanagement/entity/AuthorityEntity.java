@@ -1,4 +1,4 @@
-package com.bobbysoft.application.usermanagement.domain;
+package com.bobbysoft.application.usermanagement.entity;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,5 +1,6 @@
-package com.bobbysoft.application.usermanagement.domain;
+package com.bobbysoft.application.usermanagement.repository;
 
+import com.bobbysoft.application.usermanagement.entity.AuthorityEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

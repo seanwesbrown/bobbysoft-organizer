@@ -1,0 +1,16 @@
+<Configuration status="debug" name="bobbysoft" packages="">
+    <Appenders>
+        <Console name="stdout" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %m%n"/>
+        </Console>
+        <File name="JSONLogfileAppender" fileName="target/logfile.json">
+            <JSONLayout compact="true" eventEol="true"/>
+            <BurstFilter level="INFO" rate="2" maxBurst="10"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="error">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+</Configuration>
