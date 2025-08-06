@@ -1,8 +1,11 @@
-package com.bobbysoft.application.modulemanagement.domain;
+package com.bobbysoft.application.modulemanagement.model;
 
 public class BaseModuleItem extends ModuleItem<Boolean> {
     private String description;
     private boolean complete;
+
+    public BaseModuleItem() {
+    }
 
     public BaseModuleItem(String description, boolean complete) {
         this.description = description;
@@ -19,15 +22,19 @@ public class BaseModuleItem extends ModuleItem<Boolean> {
         return ModuleItemType.BASE;
     }
 
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
+
     @Override
-    public boolean isComplete() {
+    protected boolean isItemComplete() {
         return complete;
     }
 
     @Override
-    public void updateProgress(Boolean completed) {
+    public void updateItemProgress(Boolean completed) {
         complete = completed;
-        updateCompletionTimestamp(completed);
+        updateLastUpdateTimestamp();
     }
 
     @Override

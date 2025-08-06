@@ -1,27 +1,51 @@
-package com.bobbysoft.application.modulemanagement.domain;
+package com.bobbysoft.application.modulemanagement.entity;
 
-import java.util.List;
+import com.bobbysoft.application.modulemanagement.model.ModuleContent;
+import com.bobbysoft.application.modulemanagement.utils.ModuleContentConverter;
+import jakarta.persistence.*;
 
+import java.util.UUID;
+
+@Entity
+@Table(name = "module_components")
 public class ModuleComponentEntity {
-    private String name;
-    private ModuleEntity module;
 
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private UUID id;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "x_position")
     private int xPosition;
+
+    @Column(name = "y_position")
     private int yPosition;
 
+    @Column(name = "width")
     private int width;
+
+    @Column(name = "height")
     private int height;
 
+    @Column(name = "panel_mode")
     private boolean panelMode;
 
-    private List<ModuleItem<?>> moduleItems;
+    @ManyToOne
+    @JoinColumn(name = "module_id", nullable = false)
+    private ModuleEntity module;
 
-    public List<ModuleItem<?>> getModuleItems() {
-        return moduleItems;
+    @Convert(converter = ModuleContentConverter.class)
+    private ModuleContent moduleContent;
+
+    public ModuleContent getModuleContent() {
+        return moduleContent;
     }
 
-    public void setModuleItems(List<ModuleItem<?>> moduleItems) {
-        this.moduleItems = moduleItems;
+    public void setModuleItems(ModuleContent moduleContent) {
+        this.moduleContent = moduleContent;
     }
 
     public boolean isPanelMode() {

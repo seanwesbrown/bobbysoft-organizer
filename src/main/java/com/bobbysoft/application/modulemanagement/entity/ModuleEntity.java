@@ -1,22 +1,45 @@
-package com.bobbysoft.application.modulemanagement.domain;
+package com.bobbysoft.application.modulemanagement.entity;
 
-import com.bobbysoft.application.usermanagement.domain.UserEntity;
+import com.bobbysoft.application.usermanagement.entity.UserEntity;
+import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.UUID;
 
+@Entity
+@Table(name = "modules")
 public class ModuleEntity {
-    private String name;
-    private UserEntity owner;
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private UUID id;
 
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "x_position")
     private int xPosition;
+
+    @Column(name = "y_position")
     private int yPosition;
 
+    @Column(name = "width")
     private int width;
+
+    @Column(name = "height")
     private int height;
 
+    @Column(name = "primary_color_hex")
     private String primaryColorHex;
+
+    @Column(name = "secondary_color_hex")
     private String secondaryColorHex;
 
+    @ManyToOne()
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
+
+    @OneToMany(mappedBy = "module", cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private List<ModuleComponentEntity> moduleComponents;
 
     public String getName() {
@@ -27,12 +50,12 @@ public class ModuleEntity {
         this.name = name;
     }
 
-    public UserEntity getOwner() {
-        return owner;
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setOwner(UserEntity owner) {
-        this.owner = owner;
+    public void setUser(UserEntity owner) {
+        this.user = owner;
     }
 
     public int getXPosition() {

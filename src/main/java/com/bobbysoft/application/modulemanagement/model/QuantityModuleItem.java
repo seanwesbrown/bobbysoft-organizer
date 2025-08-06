@@ -1,4 +1,4 @@
-package com.bobbysoft.application.modulemanagement.domain;
+package com.bobbysoft.application.modulemanagement.model;
 
 import java.text.DecimalFormat;
 
@@ -6,35 +6,38 @@ public class QuantityModuleItem extends ModuleItem<Double> {
     private static final DecimalFormat displayDecimalFormat = new DecimalFormat("0.##");
     private static final DecimalFormat hideDecimalFormat = new DecimalFormat("#");
 
-    private Double quantityMax = 0.0;
+    private Double maxQuantity = 0.0;
     private Double currentQuantity = 0.0;
     private boolean displayDecimal = false;
 
-    public QuantityModuleItem(Double quantityMax, Double currentQuantity, boolean displayDecimal) {
-        this.quantityMax = quantityMax;
+    public QuantityModuleItem() {
+    }
+
+    public QuantityModuleItem(Double maxQuantity, Double currentQuantity, boolean displayDecimal) {
+        this.maxQuantity = maxQuantity;
         this.currentQuantity = currentQuantity;
         this.displayDecimal = displayDecimal;
     }
 
-    public QuantityModuleItem(Double quantityMax) {
-        this.quantityMax = quantityMax;
+    public QuantityModuleItem(Double maxQuantity) {
+        this.maxQuantity = maxQuantity;
     }
 
     @Override
-    public boolean isComplete() {
-        return currentQuantity >= quantityMax;
+    protected boolean isItemComplete() {
+        return currentQuantity >= maxQuantity;
     }
 
     @Override
-    public void updateProgress(Double progress) {
+    public void updateItemProgress(Double progress) {
         currentQuantity = progress;
 
-        if (currentQuantity >= quantityMax) {
-            currentQuantity = quantityMax;
-            updateCompletionTimestamp(true);
-        } else {
-            updateCompletionTimestamp(false);
+        if (currentQuantity >= maxQuantity) {
+            currentQuantity = maxQuantity;
+
         }
+
+        updateLastUpdateTimestamp();
     }
 
     @Override
@@ -47,12 +50,20 @@ public class QuantityModuleItem extends ModuleItem<Double> {
         return ModuleItemType.QUANTITY;
     }
 
-    public Double getQuantityMax() {
-        return quantityMax;
+    public void setCurrentQuantity(Double currentQuantity) {
+        this.currentQuantity = currentQuantity;
     }
 
-    public void setQuantityMax(Double quantityMax) {
-        this.quantityMax = quantityMax;
+    public Double getCurrentQuantity() {
+        return currentQuantity;
+    }
+
+    public Double getMaxQuantity() {
+        return maxQuantity;
+    }
+
+    public void setMaxQuantity(Double maxQuantity) {
+        this.maxQuantity = maxQuantity;
     }
 
     public boolean isDisplayDecimal() {
@@ -63,16 +74,12 @@ public class QuantityModuleItem extends ModuleItem<Double> {
         this.displayDecimal = displayDecimal;
     }
 
-    public Double getCurrentQuantity() {
-        return currentQuantity;
-    }
-
     public String getFormattedCurrentQuantity() {
         return getQuantityFormatter().format(currentQuantity);
     }
 
-    public String getFormattedQuantityMax() {
-        return getQuantityFormatter().format(quantityMax);
+    public String getFormattedMaxQuantity() {
+        return getQuantityFormatter().format(maxQuantity);
     }
 
     private DecimalFormat getQuantityFormatter() {

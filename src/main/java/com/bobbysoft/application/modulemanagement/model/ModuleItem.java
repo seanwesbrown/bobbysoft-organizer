@@ -1,5 +1,7 @@
-package com.bobbysoft.application.modulemanagement.domain;
+package com.bobbysoft.application.modulemanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.time.Clock;
@@ -9,38 +11,48 @@ import java.time.Period;
 import java.util.Date;
 import java.util.function.Function;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = BaseModuleItem.class),
+        @JsonSubTypes.Type(value = QuantityModuleItem.class)}
+)
 public abstract class ModuleItem<T> {
     private String label;
     private ModuleItemRepeatInterval repeatType;
     private Instant resetDate;
-    private Instant completedDate;
+    private Instant lastUpdateTimestamp;
 
     public abstract ModuleItemType getModuleType();
 
-    public abstract boolean isComplete();
-
-    public abstract void updateProgress(T progress);
-
     protected abstract void resetProgress();
 
-    public void maybePerformIntervalReset() {
+    protected abstract void updateItemProgress(T progress);
+
+    protected abstract boolean isItemComplete();
+
+    public void updateProgress(T progress) {
+        maybePerformIntervalReset();
+        updateItemProgress(progress);
+    }
+
+    public boolean isComplete() {
+        maybePerformIntervalReset();
+        return isItemComplete();
+    }
+
+    protected void updateLastUpdateTimestamp() {
+        lastUpdateTimestamp = Instant.now();
+    }
+
+    private void maybePerformIntervalReset() {
         Instant recentReset = getMostRecentReset();
 
-        if (recentReset != null && completedDate.isBefore(recentReset)) {
+        if (recentReset != null && lastUpdateTimestamp.isBefore(recentReset)) {
             resetProgress();
-            completedDate = null;
         }
     }
 
-    protected void updateCompletionTimestamp(boolean isComplete) {
-        if (isComplete) {
-            completedDate = Instant.now();
-        } else {
-            completedDate = null;
-        }
-    }
-
-    private Instant getMostRecentReset() {
+    public Instant getMostRecentReset() {
         if (resetDate == null || repeatType == null || repeatType == ModuleItemRepeatInterval.NONE) {
             return null;
         }
@@ -72,8 +84,12 @@ public abstract class ModuleItem<T> {
         this.resetDate = resetDate;
     }
 
-    public Instant getCompletedDate() {
-        return completedDate;
+    public void setLastUpdateDate(Instant completedDate) {
+        this.lastUpdateTimestamp = completedDate;
+    }
+
+    public Instant getLastUpdatedTimestamp() {
+        return lastUpdateTimestamp;
     }
 
     public enum ModuleItemRepeatInterval {

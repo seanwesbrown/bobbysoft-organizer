@@ -1,6 +1,7 @@
-package com.bobbysoft.application.usermanagement.domain;
+package com.bobbysoft.application.usermanagement.entity;
 
 
+import com.bobbysoft.application.modulemanagement.entity.ModuleEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
@@ -43,6 +44,9 @@ public class UserEntity implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     private Collection<AuthorityEntity> authorities;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    private Collection<ModuleEntity> modules;
 
     public boolean isEnabled() {
         return enabled;

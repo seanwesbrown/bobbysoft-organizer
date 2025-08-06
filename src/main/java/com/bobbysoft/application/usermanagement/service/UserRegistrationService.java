@@ -1,9 +1,9 @@
 package com.bobbysoft.application.usermanagement.service;
 
-import com.bobbysoft.application.usermanagement.domain.AuthorityEntity;
-import com.bobbysoft.application.usermanagement.domain.UserEntity;
-import com.bobbysoft.application.usermanagement.domain.UserRepository;
 import com.bobbysoft.application.usermanagement.dto.UserRegistrationDto;
+import com.bobbysoft.application.usermanagement.entity.AuthorityEntity;
+import com.bobbysoft.application.usermanagement.entity.UserEntity;
+import com.bobbysoft.application.usermanagement.repository.UserRepository;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.spring.security.VaadinAwareSecurityContextHolderStrategy;
 import com.vaadin.hilla.BrowserCallable;
